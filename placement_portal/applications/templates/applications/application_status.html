@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <h1 class="mb-4">My Applications</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total</h5>
+                    <p class="card-text display-5">{{ total_applications }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Applied</h5>
+                    <p class="card-text display-5">{{ applied.count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Shortlisted</h5>
+                    <p class="card-text display-5">{{ shortlisted.count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Selected</h5>
+                    <p class="card-text display-5">{{ selected.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    {% if applications %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}">{{ app.job.title }}</a>
+                            </td>
+                            <td>{{ app.job.company.company_name }}</td>
+                            <td>₹{{ app.job.package }} LPA</td>
+                            <td>{{ app.applied_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <span class="badge bg-{% if app.status == 'SELECTED' %}success{% elif app.status == 'SHORTLISTED' %}info{% elif app.status == 'REJECTED' %}danger{% else %}secondary{% endif %}">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}" class="btn btn-sm btn-outline-primary">View Job</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+
+        <h2 class="mt-5">Applications by Status</h2>
+
+        {% if applied %}
+            <h5 class="mt-4">Applied ({{ applied.count }})</h5>
+            <div class="row">
+                {% for app in applied %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ app.job.title }}</h5>
+                                <p class="card-text text-muted">{{ app.job.company.company_name }}</p>
+                                <p class="card-text">₹{{ app.job.package }} LPA</p>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if shortlisted %}
+            <h5 class="mt-4">Shortlisted ({{ shortlisted.count }})</h5>
+            <div class="row">
+                {% for app in shortlisted %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-info">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ app.job.title }}</h5>
+                                <p class="card-text text-muted">{{ app.job.company.company_name }}</p>
+                                <p class="card-text">₹{{ app.job.package }} LPA</p>
+                                <span class="badge bg-info">Shortlisted</span>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if selected %}
+            <h5 class="mt-4">Selected ({{ selected.count }})</h5>
+            <div class="row">
+                {% for app in selected %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ app.job.title }}</h5>
+                                <p class="card-text text-muted">{{ app.job.company.company_name }}</p>
+                                <p class="card-text">₹{{ app.job.package }} LPA</p>
+                                <span class="badge bg-success">Selected</span>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if rejected %}
+            <h5 class="mt-4">Rejected ({{ rejected.count }})</h5>
+            <div class="row">
+                {% for app in rejected %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-danger">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ app.job.title }}</h5>
+                                <p class="card-text text-muted">{{ app.job.company.company_name }}</p>
+                                <p class="card-text">₹{{ app.job.package }} LPA</p>
+                                <span class="badge bg-danger">Rejected</span>
+                                <a href="{% url 'jobs:job_detail' app.job.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            You haven't applied for any jobs yet. <a href="{% url 'students:eligible_jobs' %}">Browse available jobs</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

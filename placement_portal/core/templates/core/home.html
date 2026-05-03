@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Campus Placement — Home{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <h1 class="display-5 fw-bold">Campus Placement Management</h1>
+      <p class="lead text-muted">Connect students with top companies. Manage applications, placements and analytics.</p>
+      <p>
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary me-2">Student Login</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary me-2">Company Login</a>
+        <a href="{% url 'accounts:register' %}" class="btn btn-success">Register</a>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Platform Statistics</h5>
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <div class="h3">{{ stats.total_students }}</div>
+              <div class="text-muted">Students</div>
+            </div>
+            <div class="col-6 mb-3">
+              <div class="h3">{{ stats.total_companies }}</div>
+              <div class="text-muted">Companies</div>
+            </div>
+            <div class="col-6 mb-3">
+              <div class="h3">{{ stats.total_jobs }}</div>
+              <div class="text-muted">Jobs</div>
+            </div>
+            <div class="col-6 mb-3">
+              <div class="h3">{{ stats.total_placements }}</div>
+              <div class="text-muted">Placements</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <div class="row">
+    <div class="col-md-6">
+      <h3>About the Platform</h3>
+      <p class="text-muted">A single place to post jobs, apply, track applications and manage campus placements.</p>
+    </div>
+    <div class="col-md-6">
+      <h3>Features</h3>
+      <ul class="text-muted">
+        <li>Eligibility-based job listings</li>
+        <li>Application tracking</li>
+        <li>Messaging between students and companies</li>
+        <li>College admin analytics</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

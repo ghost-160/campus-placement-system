@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}All Jobs{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <h1 class="mb-4">All Jobs</h1>
+
+    {% if jobs %}
+        <div class="row">
+            {% for job in jobs %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <p class="card-text text-muted">{{ job.company.company_name }}</p>
+
+                            <dl class="row mb-3" style="font-size: 0.9rem;">
+                                <dt class="col-sm-4">Package:</dt>
+                                <dd class="col-sm-8">₹{{ job.package }} LPA</dd>
+
+                                <dt class="col-sm-4">Min CGPA:</dt>
+                                <dd class="col-sm-8">{{ job.min_cgpa }}</dd>
+
+                                <dt class="col-sm-4">Branch:</dt>
+                                <dd class="col-sm-8">{{ job.get_branch_display }}</dd>
+
+                                <dt class="col-sm-4">Type:</dt>
+                                <dd class="col-sm-8">{{ job.get_job_type_display }}</dd>
+
+                                <dt class="col-sm-4">Location:</dt>
+                                <dd class="col-sm-8">{{ job.location|default:"Not specified" }}</dd>
+
+                                <dt class="col-sm-4">Deadline:</dt>
+                                <dd class="col-sm-8">
+                                    {{ job.deadline|date:"M d, Y" }}
+                                    {% if not job.is_active %}
+                                        <span class="badge bg-danger">Expired</span>
+                                    {% endif %}
+                                </dd>
+                            </dl>
+
+                            <p class="card-text">
+                                <small>{{ job.description|truncatewords:30 }}</small>
+                            </p>
+
+                            {% if is_company %}
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-sm btn-info">View Details</a>
+                                    <a href="{% url 'companies:job_applicants' job.id %}" class="btn btn-sm btn-secondary">View Applicants ({{ job.applications.count }})</a>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-sm btn-info">View Details</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No jobs available.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

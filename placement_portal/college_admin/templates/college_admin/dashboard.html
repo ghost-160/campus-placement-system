@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}College Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">College Admin Analytics</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Students</h6>
+      <h3>{{ total_students }}</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Companies</h6>
+      <h3>{{ total_companies }}</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Jobs</h6>
+      <h3>{{ total_jobs }}</h3>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h6>Total Applications</h6>
+      <h3>{{ total_applications }}</h3>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h6>Total Placements</h6>
+      <h3>{{ total_placements }}</h3>
+      <div class="small text-muted">Placement Rate: {{ placement_rate }}%</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h6>Highest Package (LPA)</h6>
+      <h3>{{ highest_package }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h6>Top Hiring Companies</h6>
+      <ul class="mb-0">
+        {% for c in company_job_count %}
+          <li>{{ c.company__company_name }} — {{ c.total_jobs }}</li>
+        {% empty %}
+          <li class="text-muted">No data</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6>Branch-wise Placements</h6>
+      <table class="table table-sm mt-2">
+        <thead><tr><th>Branch</th><th>Placements</th></tr></thead>
+        <tbody>
+          {% for b in branch_placements %}
+            <tr><td>{{ b.student__branch }}</td><td>{{ b.count }}</td></tr>
+          {% empty %}
+            <tr><td colspan="2" class="text-muted">No placements yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6>Application Status Breakdown</h6>
+      <table class="table table-sm mt-2">
+        <thead><tr><th>Status</th><th>Count</th></tr></thead>
+        <tbody>
+          {% for s in status_breakdown %}
+            <tr><td>{{ s.status }}</td><td>{{ s.count }}</td></tr>
+          {% empty %}
+            <tr><td colspan="2" class="text-muted">No applications yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

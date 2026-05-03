@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <h1 class="mb-4">Admin Dashboard - Analytics Overview</h1>
+
+    <!-- STATS ROW 1 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card students p-3">
+                <h5 class="card-title">Total Students</h5>
+                <p class="display-4">{{ total_students }}</p>
+                <small class="text-muted">Eligible: {{ eligible_students }}</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card companies p-3">
+                <h5 class="card-title">Total Companies</h5>
+                <p class="display-4">{{ total_companies }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card jobs p-3">
+                <h5 class="card-title">Total Jobs</h5>
+                <p class="display-4">{{ total_jobs }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS ROW 2 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card applications p-3">
+                <h5 class="card-title">Total Applications</h5>
+                <p class="display-4">{{ total_applications }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card placements p-3">
+                <h5 class="card-title">Total Placements</h5>
+                <p class="display-4">{{ total_placements }}</p>
+                <small class="text-muted">Placement Rate: {{ placement_rate }}%</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card highest p-3">
+                <h5 class="card-title">Highest Package</h5>
+                <p class="display-4">₹{{ highest_package }}</p>
+                <small class="text-muted">LPA</small>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- BRANCH + STATUS -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Branch-wise Placements</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Branch</th>
+                        <th>Placements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in branch_placements %}
+                        <tr>
+                            <td>{{ item.branch_label }}</td>
+                            <td><span class="badge bg-success">{{ item.count }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">No placements yet</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Application Status Breakdown</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Status</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in status_breakdown %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-{% if item.status == 'SELECTED' %}success{% elif item.status == 'SHORTLISTED' %}info{% elif item.status == 'REJECTED' %}danger{% else %}secondary{% endif %}">
+                                    {{ item.status }}
+                                </span>
+                            </td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">No applications</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- COMPANY STATS -->
+    <h3>Top 10 Companies by Job Postings</h3>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Company Name</th>
+                <th>Total Jobs Posted</th>
+                <th>Total Applicants</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in company_job_count %}
+                <tr>
+                    <td>{{ item.company__company_name }}</td>
+                    <td><span class="badge bg-primary">{{ item.total_jobs }}</span></td>
+                    <td><span class="badge bg-secondary">{{ item.total_applicants }}</span></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">No job postings</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <div class="alert alert-info quick-links">
+        <h5>Quick Links</h5>
+        <ul class="mb-0">
+            <li><a href="/admin/">Django Admin Panel</a></li>
+            <li><a href="/admin/auth/user/">Manage Users</a></li>
+            <li><a href="/admin/students/studentprofile/">Student Profiles</a></li>
+            <li><a href="/admin/companies/companyprofile/">Company Profiles</a></li>
+            <li><a href="/admin/jobs/job/">Job Postings</a></li>
+            <li><a href="/admin/applications/application/">Applications</a></li>
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

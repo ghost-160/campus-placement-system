@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Job{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="card-title mb-4">Post a New Job</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Job Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Senior Software Engineer" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Job Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe the role, responsibilities, and requirements" required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="package" class="form-label">Package (LPA) *</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="package" name="package" placeholder="e.g., 12.5" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="min_cgpa" class="form-label">Minimum CGPA *</label>
+                                <input type="number" step="0.01" min="0" max="10" class="form-control" id="min_cgpa" name="min_cgpa" placeholder="e.g., 7.0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="branch" class="form-label">Branch *</label>
+                                <select class="form-select" id="branch" name="branch" required>
+                                    <option value="">-- Select Branch --</option>
+                                    {% for value, label in branch_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="job_type" class="form-label">Job Type *</label>
+                                <select class="form-select" id="job_type" name="job_type" required>
+                                    <option value="">-- Select Type --</option>
+                                    {% for value, label in job_type_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="deadline" class="form-label">Deadline *</label>
+                                <input type="date" class="form-control" id="deadline" name="deadline" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., Bangalore, India">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Post Job</button>
+                    <a href="{% url 'companies:dashboard' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

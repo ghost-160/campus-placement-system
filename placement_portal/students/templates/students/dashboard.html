@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <h1 class="mb-4">Student Dashboard</h1>
+
+    <!-- STATS -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center stat-card">
+                <div class="card-body">
+                    <h5>Applied</h5>
+                    <p class="display-4">{{ applied_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center stat-card bg-info text-white">
+                <div class="card-body">
+                    <h5>Shortlisted</h5>
+                    <p class="display-4 text-white">{{ shortlisted_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center stat-card bg-success text-white">
+                <div class="card-body">
+                    <h5>Selected</h5>
+                    <p class="display-4 text-white">{{ selected_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center stat-card bg-danger text-white">
+                <div class="card-body">
+                    <h5>Rejected</h5>
+                    <p class="display-4 text-white">{{ rejected_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- PROFILE -->
+    <h2 class="mb-4">Your Profile</h2>
+    <div class="profile-box mb-4">
+        <dl class="row">
+            <dt class="col-sm-3">Register Number:</dt>
+            <dd class="col-sm-9">{{ profile.register_no|default:"Not set" }}</dd>
+
+            <dt class="col-sm-3">Branch:</dt>
+            <dd class="col-sm-9">{{ profile.get_branch_display|default:"Not set" }}</dd>
+
+            <dt class="col-sm-3">CGPA:</dt>
+            <dd class="col-sm-9">{{ profile.cgpa }}/10</dd>
+
+            <dt class="col-sm-3">Skills:</dt>
+            <dd class="col-sm-9">{{ profile.skills|default:"Not set" }}</dd>
+
+            <dt class="col-sm-3">Backlogs:</dt>
+            <dd class="col-sm-9">{{ profile.backlogs }}</dd>
+
+            <dt class="col-sm-3">Eligibility Status:</dt>
+            <dd class="col-sm-9">
+                {% if profile.is_eligible %}
+                    <span class="badge bg-success">Eligible</span>
+                {% else %}
+                    <span class="badge bg-danger">Not Eligible</span>
+                {% endif %}
+            </dd>
+        </dl>
+
+        <a href="{% url 'students:profile' %}" class="btn btn-primary">
+            Edit Profile
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- RECENT APPLICATIONS -->
+    <h2 class="mb-4">Recent Applications</h2>
+
+    {% if recent_applications %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in recent_applications %}
+                        <tr>
+                            <td>{{ app.job.title }}</td>
+                            <td>{{ app.job.company.company_name }}</td>
+                            <td>{{ app.applied_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge bg-{% if app.status == 'SELECTED' %}success{% elif app.status == 'SHORTLISTED' %}info{% elif app.status == 'REJECTED' %}danger{% else %}secondary{% endif %}">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-muted">
+            No applications yet.
+            <a href="{% url 'students:eligible_jobs' %}">Browse available jobs</a>
+        </p>
+    {% endif %}
+
+</div>
+{% endblock %}

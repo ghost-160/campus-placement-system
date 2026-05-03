@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'jobs:job_list' %}" class="btn btn-secondary mb-3">← Back to Jobs</a>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-2">{{ job.title }}</h1>
+        <p class="text-muted mb-4">
+            <strong>{{ job.company.company_name }}</strong> |
+            ₹{{ job.package }} LPA |
+            {{ job.deadline|date:"M d, Y" }}
+            {% if not job.is_active %}
+                <span class="badge bg-danger">Expired</span>
+            {% endif %}
+        </p>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">About the Role</h5>
+                <p class="card-text">{{ job.description }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Requirements</h5>
+                <ul>
+                    <li>Minimum CGPA: <strong>{{ job.min_cgpa }}/10</strong></li>
+                    <li>Branch: <strong>{{ job.get_branch_display }}</strong></li>
+                    <li>Type: <strong>{{ job.get_job_type_display }}</strong></li>
+                    <li>Location: <strong>{{ job.location|default:"Not specified" }}</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        {% if is_company and is_owner %}
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Applicants</h5>
+                    <p>Total Applicants: <strong>{{ applicant_count }}</strong></p>
+                    <a href="{% url 'companies:job_applicants' job.id %}" class="btn btn-primary">View All Applicants</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card sticky-top">
+            <div class="card-body">
+                <h5 class="card-title">Company Info</h5>
+
+                {% if job.company.logo %}
+                    <img src="{{ job.company.logo.url }}" alt="{{ job.company.company_name }}" style="max-width: 100%; margin-bottom: 15px;">
+                {% endif %}
+
+                <p><strong>{{ job.company.company_name }}</strong></p>
+
+                {% if job.company.description %}
+                    <p class="small">{{ job.company.description }}</p>
+                {% endif %}
+
+                {% if job.company.website %}
+                    <p>
+                        <a href="{{ job.company.website }}" target="_blank" class="btn btn-sm btn-outline-primary">Visit Website</a>
+                    </p>
+                {% endif %}
+
+                <hr>
+
+                {% if is_student %}
+                    <div class="alert alert-{% if is_eligible %}success{% else %}danger{% endif %}">
+                        {% if is_eligible %}
+                            <strong>✓ You are eligible for this job</strong>
+                            {% if not already_applied %}
+                                <p class="mt-2">
+                                    <a href="{% url 'applications:apply' job.id %}" class="btn btn-primary w-100">Apply Now</a>
+                                </p>
+                            {% else %}
+                                <p class="mt-2">
+                                    <span class="badge bg-success w-100 p-2">Already Applied</span>
+                                </p>
+                                <p class="mt-2">
+                                    {% if user.student_profile %}
+                                        <a href="{% url 'messaging:start' job.company.id %}" class="btn btn-outline-secondary btn-sm w-100">Message Company</a>
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            <strong>✗ You are not eligible</strong>
+                            <ul class="small mt-2 mb-0">
+                                {% if not eligibility_reasons.cgpa %}
+                                    <li>Your CGPA is below the required {{ job.min_cgpa }}</li>
+                                {% endif %}
+                                {% if not eligibility_reasons.branch %}
+                                    <li>Your branch does not match the requirement</li>
+                                {% endif %}
+                                {% if not eligibility_reasons.deadline %}
+                                    <li>The application deadline has passed</li>
+                                {% endif %}
+                                {% if not eligibility_reasons.no_backlogs %}
+                                    <li>You have backlogs</li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% elif is_company %}
+                    {% if is_owner %}
+                        <p>Your job posting</p>
+                        <a href="{% url 'companies:job_applicants' job.id %}" class="btn btn-primary w-100">View Applicants ({{ applicant_count }})</a>
+                    {% else %}
+                        <p>Posted by another company</p>
+                    {% endif %}
+                {% elif is_admin %}
+                    <p class="badge bg-info">Admin View</p>
+                    <p>Total Applicants: <strong>{{ applicant_count }}</strong></p>
+                {% endif %}
+
+                <p class="text-muted small mt-3 mb-0">
+                    Last modified: {{ job.updated_at|date:"M d, Y H:i" }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

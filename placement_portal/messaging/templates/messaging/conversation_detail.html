@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">
+    {% if user.student_profile %}
+        {{ conversation.company.company_name }}
+    {% else %}
+        {{ conversation.student.user.username }}
+    {% endif %}
+</h3>
+
+<div class="card p-3 mb-3" style="height:400px; overflow-y:scroll;" id="chat-area">
+    {% for message in messages %}
+        <div class="mb-2 {% if message.sender == request.user %}text-end{% endif %}">
+            <div class="d-inline-block p-2 rounded {% if message.sender == request.user %}bg-primary text-white{% else %}bg-light{% endif %}">
+                {{ message.content }}
+                <div class="small text-muted">{{ message.timestamp|date:"M d, H:i" }}</div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<form method="POST" action="{% url 'messaging:send' conversation.id %}">
+    {% csrf_token %}
+    <div class="input-group">
+        <input type="text" name="content" class="form-control" required>
+        <button class="btn btn-primary">Send</button>
+    </div>
+</form>
+
+<script>
+setInterval(function(){ location.reload(); }, 5000);
+</script>
+
+{% endblock %}
